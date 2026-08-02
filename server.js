@@ -40,9 +40,14 @@ app.use(compression());
 // Logging
 app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
 
-// CORS
-const corsOrigin = process.env.CORS_ORIGIN || (NODE_ENV === 'development' ? true : false);
-app.use(cors({ origin: corsOrigin, credentials: true }));
+// CORS - allow all origins for now (set CORS_ORIGIN in production)
+const corsOrigin = process.env.CORS_ORIGIN || true;
+app.use(cors({ 
+  origin: corsOrigin, 
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Body parsing
 app.use(express.json({ limit: process.env.BODY_LIMIT || '10mb' }));

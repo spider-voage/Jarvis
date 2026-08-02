@@ -278,10 +278,18 @@
       state.user = data.user;
       hideAuthScreen();
       initApp();
-    } catch {
-      localStorage.removeItem('token');
-      state.token = null;
-      showAuthScreen();
+    } catch (err) {
+      console.error('Auth check failed:', err.message);
+      // Only clear token on auth-specific errors, not network/CORS errors
+      if (err.message && (err.message.includes('Invalid token') || err.message.includes('Token expired') || err.message.includes('User not found'))) {
+        localStorage.removeItem('token');
+        state.token = null;
+        showAuthScreen();
+      } else {
+        // Network/CORS error - keep token and retry later
+        showToast('Connection issue. Retrying...', 'warning');
+        setTimeout(() => initAuth(), 3000);
+      }
     }
   }
 
