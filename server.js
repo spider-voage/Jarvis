@@ -25,12 +25,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-let dbReady = null;
-function ensureDb() {
-  if (!dbReady) dbReady = initDb();
-  return dbReady;
-}
-
 // Security headers
 app.use(securityHeaders);
 
@@ -53,11 +47,6 @@ app.use(cors({ origin: corsOrigin, credentials: true }));
 // Body parsing
 app.use(express.json({ limit: process.env.BODY_LIMIT || '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: process.env.BODY_LIMIT || '10mb' }));
-
-// DB initialization middleware
-app.use((req, res, next) => {
-  ensureDb().then(() => next()).catch(next);
-});
 
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -105,17 +94,19 @@ app.use((err, req, res, next) => {
   });
 });
 
-if (require.main === module) {
-  ensureDb()
-    .then(() => {
-      app.listen(PORT, () => {
-        console.log(`Spider AI v2.0 running on http://localhost:${PORT} [${NODE_ENV}]`);
-      });
-    })
-    .catch(err => {
-      console.error('Failed to initialize database', err);
-      process.exit(1);
+// Initialize DB once, then start server
+initDb()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Spider AI v2.0 running on http://localhost:${PORT} [${NODE_ENV}]`);
     });
-}
+  })
+  .catch(err => {
+    console.error('Failed to initialize database', err);
+    // Still start the server so the app doesn't completely die
+    app.listen(PORT, () => {
+      console.log(`Spider AI v2.0 running (DB init failed) on http://localhost:${PORT} [${NODE_ENV}]`);
+    });
+  });
 
 module.exports = app;

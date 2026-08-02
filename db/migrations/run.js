@@ -1,9 +1,8 @@
 // db/migrations/run.js
-const { db } = require('../init');
 const fs = require('fs');
 const path = require('path');
 
-async function runMigrations() {
+async function runMigrations(db) {
   // Ensure migrations tracking table exists
   await db.execute(`
     CREATE TABLE IF NOT EXISTS _migrations (
@@ -53,7 +52,8 @@ async function runMigrations() {
 }
 
 if (require.main === module) {
-  runMigrations().catch(err => {
+  const { db } = require('../init');
+  runMigrations(db).catch(err => {
     console.error('Migration failed:', err);
     process.exit(1);
   });
