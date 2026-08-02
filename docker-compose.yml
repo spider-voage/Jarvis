@@ -1,0 +1,21 @@
+# Spider AI v2.0 — Docker Compose
+version: '3.8'
+
+services:
+  spider-ai:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - JWT_SECRET=${JWT_SECRET}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - TURSO_DATABASE_URL=${TURSO_DATABASE_URL:-file:local.db}
+      - TURSO_AUTH_TOKEN=${TURSO_AUTH_TOKEN}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - PAYPAL_CLIENT_ID=${PAYPAL_CLIENT_ID}
+      - PAYPAL_CLIENT_SECRET=${PAYPAL_CLIENT_SECRET}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

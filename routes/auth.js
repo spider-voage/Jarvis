@@ -1,23 +1,13 @@
 // routes/auth.js
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const { db } = require('../db/init');
+const { signToken } = require('../middleware/auth');
 
 const router = express.Router();
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function signToken(userId) {
-  return jwt.sign(
-    { userId },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-  );
-}
-
-// POST /api/auth/register
 router.post('/register',
   body('email').isEmail().normalizeEmail(),
   body('password').isLength({ min: 8 }),
@@ -29,7 +19,6 @@ router.post('/register',
       }
 
       const { email, password, name } = req.body || {};
-
       if (!email || !EMAIL_RE.test(email)) {
         return res.status(400).json({ error: 'Valid email is required' });
       }
@@ -54,9 +43,8 @@ router.post('/register',
       const userId = Number(result.lastInsertRowid);
       const token = signToken(userId);
 
-      // Create default settings
       await db.execute({
-        sql: `INSERT INTO user_settings (user_id) VALUES (?)`,
+        sql: 'INSERT INTO user_settings (user_id) VALUES (?)',
         args: [userId],
       });
 
@@ -71,7 +59,6 @@ router.post('/register',
   }
 );
 
-// POST /api/auth/login
 router.post('/login',
   body('email').isEmail().normalizeEmail(),
   body('password').exists(),
@@ -114,14 +101,14 @@ router.post('/login',
   }
 );
 
-// GET /api/auth/me
 router.get('/me', async (req, res) => {
   try {
     const header = req.headers.authorization || '';
     const token = header.startsWith('Bearer ') ? header.slice(7) : null;
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const { verifyToken } = require('../middleware/auth');
+    const payload = verifyToken(token);
     const result = await db.execute({
       sql: 'SELECT id, email, name FROM users WHERE id = ?',
       args: [payload.userId],

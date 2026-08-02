@@ -1,205 +1,176 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#050810">
-  <meta name="description" content="Spider AI — A premium voice-enabled AI assistant with a futuristic HUD interface.">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spider AI</title>
   <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" href="/icon-192.png">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%2300d4ff' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='20' fill='%2300d4ff' opacity='0.8'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <!-- Background Grid -->
-  <div class="bg-grid"></div>
-  <!-- Particle Canvas -->
-  <canvas id="particle-canvas"></canvas>
-
   <!-- Loading Screen -->
   <div class="loading-screen" id="loading-screen">
     <div class="loading-orb">
       <svg viewBox="0 0 100 100">
-        <circle class="orb-ring" cx="50" cy="50" r="42"/>
-        <circle class="orb-core" cx="50" cy="50" r="18"/>
+        <circle class="orb-ring" cx="50" cy="50" r="45"/>
+        <circle class="orb-core" cx="50" cy="50" r="8"/>
       </svg>
     </div>
     <div class="loading-text">Initializing Spider AI</div>
   </div>
 
-  <!-- Auth Screens -->
-  <div class="auth-screen" id="auth-screen">
+  <!-- Auth Screen -->
+  <div class="auth-screen hidden" id="auth-screen">
     <div class="auth-card">
       <div class="auth-logo">
-        <svg viewBox="0 0 100 100" fill="none">
-          <circle cx="50" cy="50" r="45" stroke="url(#grad1)" stroke-width="3"/>
-          <circle cx="50" cy="50" r="22" fill="url(#grad1)" opacity="0.9"/>
-          <defs>
-            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#00d4ff"/>
-              <stop offset="100%" style="stop-color:#00f0ff"/>
-            </linearGradient>
-          </defs>
+        <svg viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="28" stroke="var(--accent-primary)" stroke-width="2"/>
+          <circle cx="32" cy="32" r="12" fill="var(--accent-primary)" opacity="0.8"/>
+          <path d="M32 4v8M32 52v8M4 32h8M52 32h8" stroke="var(--accent-primary)" stroke-width="2" opacity="0.5"/>
         </svg>
         <h1>Spider AI</h1>
-        <p>Your intelligent voice companion</p>
+        <p>Your intelligent assistant</p>
       </div>
-      <div class="error-msg" id="auth-error"></div>
-      <div id="auth-form-container">
-        <!-- Login Form -->
-        <form id="login-form">
-          <div class="form-group">
-            <label for="login-email">Email</label>
-            <input type="email" id="login-email" class="form-input" placeholder="you@example.com" required autocomplete="email">
-          </div>
-          <div class="form-group">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" class="form-input" placeholder="Min 8 characters" required autocomplete="current-password">
-          </div>
-          <button type="submit" class="btn btn-primary">Sign In</button>
-        </form>
-        <div class="auth-footer">
-          Don't have an account? <a id="show-register">Create one</a>
+
+      <form id="login-form" class="auth-form">
+        <div class="error-msg" id="login-error"></div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="login-email" class="form-input" placeholder="you@example.com" required>
         </div>
-      </div>
-      <div id="register-form-container" style="display:none">
-        <!-- Register Form -->
-        <form id="register-form">
-          <div class="form-group">
-            <label for="reg-name">Name</label>
-            <input type="text" id="reg-name" class="form-input" placeholder="Your name" autocomplete="name">
-          </div>
-          <div class="form-group">
-            <label for="reg-email">Email</label>
-            <input type="email" id="reg-email" class="form-input" placeholder="you@example.com" required autocomplete="email">
-          </div>
-          <div class="form-group">
-            <label for="reg-password">Password</label>
-            <input type="password" id="reg-password" class="form-input" placeholder="Min 8 characters" required autocomplete="new-password">
-          </div>
-          <button type="submit" class="btn btn-primary">Create Account</button>
-        </form>
-        <div class="auth-footer">
-          Already have an account? <a id="show-login">Sign in</a>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="Min 8 characters" required minlength="8">
         </div>
-      </div>
+        <button type="submit" class="btn btn-primary">Sign In</button>
+        <div class="auth-footer">
+          Don't have an account? <a id="toggle-auth">Create one</a>
+        </div>
+      </form>
+
+      <form id="register-form" class="auth-form hidden">
+        <div class="error-msg" id="register-error"></div>
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="register-name" class="form-input" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="register-email" class="form-input" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="register-password" class="form-input" placeholder="Min 8 characters" required minlength="8">
+        </div>
+        <button type="submit" class="btn btn-primary">Create Account</button>
+        <div class="auth-footer">
+          Already have an account? <a id="toggle-auth">Sign in</a>
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- Main App -->
-  <div class="app-container" id="app-container" style="display:none">
+  <!-- App Container -->
+  <div class="app-container hidden" id="app-container">
+    <!-- Background -->
+    <div class="bg-grid"></div>
+    <canvas id="particle-canvas"></canvas>
+
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-brand">
-          <svg viewBox="0 0 100 100" fill="none">
-            <circle cx="50" cy="50" r="45" stroke="url(#grad2)" stroke-width="3"/>
-            <circle cx="50" cy="50" r="22" fill="url(#grad2)" opacity="0.9"/>
-            <defs>
-              <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#00d4ff"/>
-                <stop offset="100%" style="stop-color:#00f0ff"/>
-              </linearGradient>
-            </defs>
+          <svg viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="14" stroke="var(--accent-primary)" stroke-width="2"/>
+            <circle cx="16" cy="16" r="6" fill="var(--accent-primary)" opacity="0.8"/>
           </svg>
           <span>Spider AI</span>
         </div>
-        <button class="btn-icon" id="new-chat-btn" title="New Chat (Ctrl+N)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <button class="btn-icon new-chat-btn" title="New chat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         </button>
       </div>
+
       <div class="sidebar-search">
-        <input type="text" id="conv-search" placeholder="Search conversations...">
+        <input type="text" placeholder="Search conversations...">
       </div>
-      <div class="conversations-list" id="conversations-list"></div>
+
+      <div class="conversations-list"></div>
+
       <div class="sidebar-footer">
         <div class="user-avatar" id="user-avatar">U</div>
         <div class="user-info">
           <div class="user-name" id="user-name">User</div>
           <div class="user-email" id="user-email">user@example.com</div>
         </div>
-        <button class="btn-icon" id="settings-btn" title="Settings (Ctrl+,)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <button class="btn-icon dashboard-btn" title="Account">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
         </button>
-        <button class="btn-icon" id="logout-btn" title="Logout">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <button class="btn-icon settings-btn" title="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         </button>
       </div>
     </aside>
 
     <!-- Sidebar Backdrop (mobile) -->
-    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+    <div class="sidebar-backdrop"></div>
 
-    <!-- Main Chat Area -->
+    <!-- Main Area -->
     <main class="main-area">
+      <!-- Chat Header -->
       <header class="chat-header">
         <div class="chat-header-left">
-          <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <button class="menu-toggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
           </button>
-          <span class="chat-title" id="chat-title">New Chat</span>
+          <h1 class="chat-title">New chat</h1>
         </div>
         <div class="chat-header-right">
-          <button class="btn-icon" id="voice-toggle-btn" title="Voice Mode (V)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-          </button>
-          <button class="btn-icon" id="theme-toggle-btn" title="Toggle Theme (Ctrl+Shift+L)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="theme-icon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <button class="btn-icon" id="voice-mode-btn" title="Voice mode">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
           </button>
         </div>
       </header>
 
-      <div class="messages-container" id="messages-container">
-        <div class="welcome-screen" id="welcome-screen">
+      <!-- Messages -->
+      <div class="messages-container">
+        <div class="welcome-screen">
           <div class="welcome-orb">
-            <div class="orb-glow"></div>
-            <svg viewBox="0 0 100 100" fill="none">
-              <circle cx="50" cy="50" r="45" stroke="url(#grad3)" stroke-width="2" opacity="0.5"/>
-              <circle cx="50" cy="50" r="35" stroke="url(#grad3)" stroke-width="1.5" opacity="0.3" stroke-dasharray="4 4"/>
-              <circle cx="50" cy="50" r="22" fill="url(#grad3)" opacity="0.9"/>
-              <defs>
-                <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style="stop-color:#00d4ff"/>
-                  <stop offset="100%" style="stop-color:#00f0ff"/>
-                </linearGradient>
-              </defs>
+            <svg viewBox="0 0 120 120" fill="none">
+              <circle cx="60" cy="60" r="50" stroke="var(--accent-primary)" stroke-width="1.5" opacity="0.3"/>
+              <circle cx="60" cy="60" r="35" stroke="var(--accent-secondary)" stroke-width="2" opacity="0.5"/>
+              <circle cx="60" cy="60" r="15" fill="var(--accent-primary)" opacity="0.8"/>
             </svg>
+            <div class="orb-glow"></div>
           </div>
-          <h2>Spider AI</h2>
-          <p>Your calm, intelligent, and capable voice companion. Start typing or press the microphone to speak.</p>
+          <h2>How can I help you today?</h2>
+          <p>Spider AI is ready to assist with coding, writing, analysis, and more. Just start typing or use voice.</p>
           <div class="welcome-shortcuts">
-            <div class="shortcut-chip" data-prompt="Explain quantum computing in simple terms">Quantum Computing</div>
-            <div class="shortcut-chip" data-prompt="Write a Python function to sort a list">Python Code</div>
-            <div class="shortcut-chip" data-prompt="Help me plan a productive day">Daily Plan</div>
-            <div class="shortcut-chip" data-prompt="Tell me a fascinating science fact">Science Fact</div>
+            <div class="shortcut-chip" data-prompt="Write a Python function to sort a list of dictionaries by a key">Sort dictionaries</div>
+            <div class="shortcut-chip" data-prompt="Explain quantum computing in simple terms">Explain quantum</div>
+            <div class="shortcut-chip" data-prompt="Write a professional email requesting a meeting">Draft email</div>
+            <div class="shortcut-chip" data-prompt="Debug this code: for i in range(10): print(i">Debug code</div>
           </div>
         </div>
       </div>
 
+      <!-- Input Area -->
       <div class="input-area">
-        <div class="input-wrapper" id="input-wrapper">
-          <textarea class="chat-input" id="chat-input" placeholder="Ask Spider AI anything..." rows="1" autocomplete="off"></textarea>
+        <div class="input-wrapper">
+          <textarea class="chat-input" placeholder="Message Spider AI..." rows="1"></textarea>
           <div class="input-actions">
-            <button class="btn-icon" id="attach-btn" title="Attach file">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            <button class="voice-btn" title="Voice input">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
             </button>
-            <button class="voice-btn" id="voice-btn" title="Push to Talk (Hold Space)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-            </button>
-            <button class="send-btn" id="send-btn" title="Send (Enter)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            <button class="send-btn" title="Send">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
             </button>
           </div>
         </div>
-        <div class="input-hint">
-          <kbd>Ctrl</kbd> + <kbd>Enter</kbd> for new line · <kbd>Space</kbd> hold to talk · <kbd>/</kbd> to focus
-        </div>
+        <div class="input-hint"><kbd>Enter</kbd> to send · <kbd>Shift</kbd> + <kbd>Enter</kbd> for new line</div>
       </div>
     </main>
   </div>
@@ -208,20 +179,20 @@
   <div class="voice-hud" id="voice-hud">
     <div class="voice-orb-container">
       <div class="voice-orb" id="voice-orb">
-        <svg viewBox="0 0 100 100" fill="none">
-          <circle class="orb-ring-outer" cx="50" cy="50" r="45"/>
-          <circle class="orb-ring-inner" cx="50" cy="50" r="35" stroke-dasharray="6 4"/>
-          <circle class="orb-core" cx="50" cy="50" r="18"/>
+        <svg viewBox="0 0 200 200">
+          <circle class="orb-ring-outer" cx="100" cy="100" r="90"/>
+          <circle class="orb-ring-inner" cx="100" cy="100" r="70"/>
+          <circle class="orb-core" cx="100" cy="100" r="25"/>
         </svg>
       </div>
       <div class="voice-orb-glow"></div>
     </div>
     <div class="waveform-container" id="waveform"></div>
-    <div class="voice-status" id="voice-status">Listening...</div>
-    <div class="voice-substatus" id="voice-substatus">Say something or press space to stop</div>
+    <div class="voice-status">Ready</div>
+    <div class="voice-substatus">Tap the microphone to start</div>
     <div class="voice-controls">
-      <button id="voice-stop-btn">Stop</button>
-      <button id="voice-cancel-btn" class="danger">Cancel</button>
+      <button id="voice-stop">Stop Speaking</button>
+      <button class="danger" id="voice-close">Close</button>
     </div>
   </div>
 
@@ -230,8 +201,8 @@
     <div class="modal">
       <div class="modal-header">
         <h2>Settings</h2>
-        <button class="modal-close" id="settings-close">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <button class="modal-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
       </div>
       <div class="modal-body">
@@ -243,13 +214,10 @@
               <div class="setting-label">Theme</div>
               <div class="setting-desc">Choose your interface theme</div>
             </div>
-            <div class="setting-control">
-              <select class="select-control" id="setting-theme">
-                <option value="dark">Dark</option>
-                <option value="light">Light</option>
-                <option value="system">System</option>
-              </select>
-            </div>
+            <select class="select-control" id="theme-select">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+            </select>
           </div>
           <div class="setting-row">
             <div>
@@ -257,9 +225,7 @@
               <div class="setting-desc">Customize the interface accent</div>
             </div>
             <div class="setting-control">
-              <button class="color-picker" id="setting-accent-picker">
-                <input type="color" id="setting-accent" value="#00d4ff">
-              </button>
+              <input type="color" id="accent-picker" class="color-picker" value="#00d4ff">
             </div>
           </div>
         </div>
@@ -272,22 +238,11 @@
               <div class="setting-label">TTS Provider</div>
               <div class="setting-desc">Text-to-speech engine</div>
             </div>
-            <div class="setting-control">
-              <select class="select-control" id="setting-tts-provider">
-                <option value="elevenlabs">ElevenLabs</option>
-                <option value="openai">OpenAI</option>
-                <option value="disabled">Disabled</option>
-              </select>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div>
-              <div class="setting-label">Voice</div>
-              <div class="setting-desc">Select a voice persona</div>
-            </div>
-            <div class="setting-control">
-              <select class="select-control" id="setting-voice"></select>
-            </div>
+            <select class="select-control" id="tts-provider">
+              <option value="elevenlabs">ElevenLabs</option>
+              <option value="openai">OpenAI</option>
+              <option value="browser">Browser (Free)</option>
+            </select>
           </div>
           <div class="setting-row">
             <div>
@@ -295,7 +250,7 @@
               <div class="setting-desc">Playback speed multiplier</div>
             </div>
             <div class="setting-control">
-              <input type="range" class="range-control" id="setting-voice-speed" min="0.5" max="2.0" step="0.1" value="1.0">
+              <input type="range" class="range-control" id="voice-speed" min="0.5" max="2" step="0.1" value="1">
               <span class="range-value" id="voice-speed-value">1.0x</span>
             </div>
           </div>
@@ -305,18 +260,8 @@
               <div class="setting-desc">Output volume level</div>
             </div>
             <div class="setting-control">
-              <input type="range" class="range-control" id="setting-voice-volume" min="0" max="1" step="0.05" value="1.0">
+              <input type="range" class="range-control" id="voice-volume" min="0" max="1" step="0.1" value="1">
               <span class="range-value" id="voice-volume-value">100%</span>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div>
-              <div class="setting-label">Microphone Sensitivity</div>
-              <div class="setting-desc">Voice activation threshold</div>
-            </div>
-            <div class="setting-control">
-              <input type="range" class="range-control" id="setting-mic-sens" min="0" max="1" step="0.05" value="0.5">
-              <span class="range-value" id="mic-sens-value">50%</span>
             </div>
           </div>
           <div class="setting-row">
@@ -324,9 +269,7 @@
               <div class="setting-label">Hands-Free Mode</div>
               <div class="setting-desc">Auto-start listening after AI speaks</div>
             </div>
-            <div class="setting-control">
-              <div class="toggle" id="setting-handsfree"></div>
-            </div>
+            <div class="toggle" id="handsfree-toggle"></div>
           </div>
         </div>
 
@@ -338,23 +281,16 @@
               <div class="setting-label">Language</div>
               <div class="setting-desc">Preferred conversation language</div>
             </div>
-            <div class="setting-control">
-              <select class="select-control" id="setting-language">
-                <option value="auto">Auto-detect</option>
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="it">Italian</option>
-                <option value="pt">Portuguese</option>
-                <option value="zh">Chinese</option>
-                <option value="ja">Japanese</option>
-                <option value="ko">Korean</option>
-                <option value="ru">Russian</option>
-                <option value="ar">Arabic</option>
-                <option value="hi">Hindi</option>
-              </select>
-            </div>
+            <select class="select-control" id="language-select">
+              <option value="auto">Auto-detect</option>
+              <option value="en-US">English</option>
+              <option value="es-ES">Spanish</option>
+              <option value="fr-FR">French</option>
+              <option value="de-DE">German</option>
+              <option value="zh-CN">Chinese</option>
+              <option value="ja-JP">Japanese</option>
+              <option value="ar-SA">Arabic</option>
+            </select>
           </div>
         </div>
 
@@ -366,9 +302,7 @@
               <div class="setting-label">Enable Notifications</div>
               <div class="setting-desc">Show toast notifications</div>
             </div>
-            <div class="setting-control">
-              <div class="toggle active" id="setting-notifications"></div>
-            </div>
+            <div class="toggle active" id="notifications-toggle"></div>
           </div>
         </div>
 
@@ -377,42 +311,37 @@
           <h3>Data</h3>
           <div class="setting-row">
             <div>
-              <div class="setting-label">Export Settings</div>
-              <div class="setting-desc">Download your settings as JSON</div>
+              <div class="setting-label">Export All Chats</div>
+              <div class="setting-desc">Download all conversations as JSON</div>
             </div>
-            <div class="setting-control">
-              <button class="btn btn-secondary" id="export-settings-btn" style="padding:8px 16px;font-size:13px">Export</button>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div>
-              <div class="setting-label">Import Settings</div>
-              <div class="setting-desc">Restore settings from JSON file</div>
-            </div>
-            <div class="setting-control">
-              <button class="btn btn-secondary" id="import-settings-btn" style="padding:8px 16px;font-size:13px">Import</button>
-              <input type="file" id="import-settings-file" accept=".json" style="display:none">
-            </div>
+            <button class="btn btn-secondary" id="export-all-btn">Export</button>
           </div>
           <div class="setting-row">
             <div>
               <div class="setting-label">Clear All Data</div>
               <div class="setting-desc">Remove all local cached data</div>
             </div>
-            <div class="setting-control">
-              <button class="btn btn-secondary danger" id="clear-data-btn" style="padding:8px 16px;font-size:13px">Clear</button>
-            </div>
+            <button class="btn btn-secondary danger" id="clear-data-btn">Clear</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div class="toast-container" id="toast-container"></div>
-
-  <!-- Hidden file input -->
-  <input type="file" id="file-input" style="display:none" multiple accept="image/*,.pdf,.txt,.md,.js,.py,.html,.css,.json">
+  <!-- Dashboard Modal -->
+  <div class="modal-overlay" id="dashboard-modal">
+    <div class="modal" style="max-width: 700px;">
+      <div class="modal-header">
+        <h2>Account</h2>
+        <button class="modal-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="dashboard-content">
+        <div class="dashboard-loading">Loading your account...</div>
+      </div>
+    </div>
+  </div>
 
   <script src="/js/app.js"></script>
 </body>

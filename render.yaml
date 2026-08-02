@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: spider-ai
+    runtime: node
+    plan: standard
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: TURSO_DATABASE_URL
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false

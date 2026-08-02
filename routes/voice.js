@@ -8,7 +8,6 @@ const router = express.Router();
 router.use(requireAuth);
 router.use(voiceLimiter);
 
-// GET /api/voice/providers
 router.get('/providers', async (req, res) => {
   try {
     const providers = voiceService.getProviders();
@@ -19,7 +18,6 @@ router.get('/providers', async (req, res) => {
   }
 });
 
-// POST /api/voice/tts
 router.post('/tts', async (req, res) => {
   try {
     const { text, voiceId, speed, provider } = req.body || {};
@@ -27,12 +25,7 @@ router.post('/tts', async (req, res) => {
       return res.status(400).json({ error: 'text is required' });
     }
 
-    const audioBuffer = await voiceService.textToSpeech({
-      text,
-      voiceId,
-      speed,
-      provider,
-    });
+    const audioBuffer = await voiceService.textToSpeech({ text, voiceId, speed, provider });
 
     res.setHeader('Content-Type', 'audio/mpeg');
     res.setHeader('Content-Length', audioBuffer.length);
@@ -43,7 +36,6 @@ router.post('/tts', async (req, res) => {
   }
 });
 
-// POST /api/voice/stt
 router.post('/stt', async (req, res) => {
   try {
     if (!req.body || !req.body.audio) {

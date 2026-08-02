@@ -1,5 +1,5 @@
 // sw.js — Service Worker for offline support
-const CACHE_NAME = 'spider-ai-v1';
+const CACHE_NAME = 'spider-ai-v2';
 const STATIC_ASSETS = [
   '/',
   '/css/style.css',
@@ -31,20 +31,17 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-  // Only cache GET requests for static assets
   if (request.method !== 'GET') return;
 
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;
       return fetch(request).then((response) => {
-        // Don't cache API calls
         if (request.url.includes('/api/')) return response;
         const clone = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         return response;
       }).catch(() => {
-        // Offline fallback for navigation
         if (request.mode === 'navigate') {
           return caches.match('/');
         }

@@ -10,7 +10,6 @@ const MODEL = process.env.AI_MODEL || 'openai/gpt-4o-mini';
 const MAX_TOKENS = parseInt(process.env.AI_MAX_TOKENS || '2048', 10);
 const TEMPERATURE = parseFloat(process.env.AI_TEMPERATURE || '0.7');
 
-// GET /api/chat/conversations
 router.get('/conversations', async (req, res) => {
   try {
     const result = await db.execute({
@@ -25,7 +24,6 @@ router.get('/conversations', async (req, res) => {
   }
 });
 
-// POST /api/chat/conversations
 router.post('/conversations', async (req, res) => {
   try {
     const title = (req.body && req.body.title) || 'New chat';
@@ -40,7 +38,6 @@ router.post('/conversations', async (req, res) => {
   }
 });
 
-// DELETE /api/chat/conversations/:id
 router.delete('/conversations/:id', async (req, res) => {
   try {
     const owns = await ownsConversation(req.userId, req.params.id);
@@ -56,7 +53,6 @@ router.delete('/conversations/:id', async (req, res) => {
   }
 });
 
-// PATCH /api/chat/conversations/:id
 router.patch('/conversations/:id', async (req, res) => {
   try {
     const owns = await ownsConversation(req.userId, req.params.id);
@@ -74,7 +70,6 @@ router.patch('/conversations/:id', async (req, res) => {
   }
 });
 
-// GET /api/chat/conversations/:id/messages
 router.get('/conversations/:id/messages', async (req, res) => {
   try {
     const owns = await ownsConversation(req.userId, req.params.id);
@@ -92,7 +87,6 @@ router.get('/conversations/:id/messages', async (req, res) => {
   }
 });
 
-// DELETE /api/chat/conversations/:id/messages/:msgId
 router.delete('/conversations/:id/messages/:msgId', async (req, res) => {
   try {
     const owns = await ownsConversation(req.userId, req.params.id);
@@ -108,7 +102,6 @@ router.delete('/conversations/:id/messages/:msgId', async (req, res) => {
   }
 });
 
-// POST /api/chat/conversations/:id/messages
 router.post('/conversations/:id/messages', async (req, res) => {
   try {
     const { content } = req.body || {};
@@ -120,7 +113,6 @@ router.post('/conversations/:id/messages', async (req, res) => {
     const owns = await ownsConversation(req.userId, conversationId);
     if (!owns) return res.status(404).json({ error: 'Conversation not found' });
 
-    // Save user message
     await db.execute({
       sql: 'INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)',
       args: [conversationId, 'user', content],
@@ -128,7 +120,6 @@ router.post('/conversations/:id/messages', async (req, res) => {
 
     const isStream = req.query.stream === 'true';
 
-    // Build context
     const history = await db.execute({
       sql: `SELECT role, content FROM messages WHERE conversation_id = ?
             ORDER BY id DESC LIMIT 30`,
@@ -148,7 +139,6 @@ router.post('/conversations/:id/messages', async (req, res) => {
     ];
 
     if (isStream) {
-      // SSE streaming
       res.setHeader('Content-Type', 'text/event-stream');
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
@@ -165,7 +155,6 @@ router.post('/conversations/:id/messages', async (req, res) => {
         console.error('[chat/stream]', err);
         res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
       } finally {
-        // Save assistant reply
         if (fullReply.trim()) {
           await db.execute({
             sql: 'INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)',

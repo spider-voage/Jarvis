@@ -6,7 +6,6 @@ const { requireAuth } = require('../middleware/auth');
 const router = express.Router();
 router.use(requireAuth);
 
-// GET /api/settings
 router.get('/', async (req, res) => {
   try {
     const result = await db.execute({
@@ -17,7 +16,6 @@ router.get('/', async (req, res) => {
       args: [req.userId],
     });
     if (result.rows.length === 0) {
-      // Create defaults
       await db.execute({
         sql: 'INSERT INTO user_settings (user_id) VALUES (?)',
         args: [req.userId],
@@ -42,7 +40,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// PUT /api/settings
 router.put('/', async (req, res) => {
   try {
     const allowed = [

@@ -1,6 +1,6 @@
 /* ============================================
-   Spider AI — Premium Futuristic HUD Theme
-   ============================================ */
+ Spider AI — Premium Futuristic HUD Theme
+ ============================================ */
 
 /* CSS Variables */
 :root {
@@ -105,8 +105,8 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
 
 /* ============================================
-   Loading Screen
-   ============================================ */
+ Loading Screen
+ ============================================ */
 .loading-screen {
   position: fixed;
   inset: 0;
@@ -134,7 +134,6 @@ body {
 .loading-orb svg {
   width: 100%;
   height: 100%;
-  animation: orbSpin 3s linear infinite;
 }
 
 .loading-orb .orb-ring {
@@ -178,8 +177,8 @@ body {
 }
 
 /* ============================================
-   Auth Screens
-   ============================================ */
+ Auth Screens
+ ============================================ */
 .auth-screen {
   position: fixed;
   inset: 0;
@@ -375,8 +374,8 @@ body {
 }
 
 /* ============================================
-   App Layout
-   ============================================ */
+ App Layout
+ ============================================ */
 .app-container {
   display: flex;
   height: 100vh;
@@ -1017,8 +1016,8 @@ body {
 }
 
 /* ============================================
-   Voice HUD Overlay
-   ============================================ */
+ Voice HUD Overlay
+ ============================================ */
 .voice-hud {
   position: fixed;
   inset: 0;
@@ -1178,8 +1177,8 @@ body {
 }
 
 /* ============================================
-   Settings Modal
-   ============================================ */
+ Settings Modal
+ ============================================ */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1398,8 +1397,8 @@ body {
 }
 
 /* ============================================
-   Toast Notifications
-   ============================================ */
+ Toast Notifications
+ ============================================ */
 .toast-container {
   position: fixed;
   top: 24px;
@@ -1449,8 +1448,8 @@ body {
 }
 
 /* ============================================
-   Mobile Responsive
-   ============================================ */
+ Mobile Responsive
+ ============================================ */
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
@@ -1501,8 +1500,8 @@ body {
 }
 
 /* ============================================
-   Accessibility
-   ============================================ */
+ Accessibility
+ ============================================ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -1532,10 +1531,9 @@ select:focus-visible {
   outline-offset: 2px;
 }
 
-
 /* ============================================
-   Syntax Highlighting
-   ============================================ */
+ Syntax Highlighting
+ ============================================ */
 .hl-keyword { color: #ff79c6; font-weight: 600; }
 .hl-string { color: #f1fa8c; }
 .hl-number { color: #bd93f9; }
@@ -1557,3 +1555,226 @@ select:focus-visible {
 [data-theme="light"] .hl-tag { color: #22863a; }
 [data-theme="light"] .hl-attr { color: #6f42c1; }
 [data-theme="light"] .hl-property { color: #005cc5; }
+
+/* ============================================
+ Dashboard & Account Styles
+ ============================================ */
+.dashboard-loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+}
+
+.dashboard-card {
+  background: var(--bg-glass-light);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.dashboard-card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.plan-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.plan-free {
+  background: rgba(255, 170, 0, 0.15);
+  color: var(--warning);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+}
+
+.plan-pro {
+  background: rgba(0, 255, 136, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.plan-status {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.usage-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.usage-item {
+  text-align: center;
+  padding: 16px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+
+.usage-value {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
+}
+
+.usage-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+}
+
+.feature-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.feature-list li:last-child {
+  border-bottom: none;
+}
+
+.feature-list .enabled {
+  color: var(--success);
+}
+
+.feature-list .disabled {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+/* ============================================
+ Code Block Styles
+ ============================================ */
+.code-block {
+  margin: 12px 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.code-lang {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-mono);
+}
+
+.code-copy {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.code-copy:hover {
+  background: var(--accent-glow);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+/* ============================================
+ Conversation Section Headers
+ ============================================ */
+.conv-section-header {
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+/* ============================================
+ Math Formatting
+ ============================================ */
+.math, .math-inline {
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+}
+
+.math {
+  display: block;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  margin: 12px 0;
+  text-align: center;
+}
+
+.math-inline {
+  color: var(--accent-primary);
+}
+
+/* ============================================
+ Message Actions Enhancement
+ ============================================ */
+.msg-copy, .msg-regenerate, .msg-edit, .msg-edit-user, .msg-delete {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: var(--transition-fast);
+}
+
+.msg-copy:hover, .msg-regenerate:hover, .msg-edit:hover,
+.msg-edit-user:hover, .msg-delete:hover {
+  color: var(--accent-primary);
+  background: var(--accent-glow);
+}
+
+/* ============================================
+ Auth form hidden class
+ ============================================ */
+.auth-form.hidden {
+  display: none;
+}
+
+/* ============================================
+ App container hidden
+ ============================================ */
+.app-container.hidden {
+  display: none;
+}
