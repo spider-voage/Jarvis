@@ -1,5 +1,5 @@
 // sw.js — Service Worker for offline support
-const CACHE_NAME = 'spider-ai-v2';
+const CACHE_NAME = 'spider-ai-v3'; // Bumped version to bust old cache
 const STATIC_ASSETS = [
   '/',
   '/css/style.css',
@@ -33,19 +33,23 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
+  // Never cache API calls
+  if (request.url.includes('/api/')) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
   event.respondWith(
     caches.match(request).then((cached) => {
-      if (cached) return cached;
+      // Always fetch fresh for HTML/JS/CSS, use cache as fallback
       return fetch(request).then((response) => {
-        if (request.url.includes('/api/')) return response;
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        }
         return response;
       }).catch(() => {
-        if (request.mode === 'navigate') {
-          return caches.match('/');
-        }
-        return new Response('Offline', { status: 503 });
+        return cached || new Response('Offline', { status: 503 });
       });
     })
   );
