@@ -40,14 +40,20 @@ app.use(compression());
 // Logging
 app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
 
-// CORS - allow all origins for now (set CORS_ORIGIN in production)
-const corsOrigin = process.env.CORS_ORIGIN || true;
-app.use(cors({ 
-  origin: corsOrigin, 
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// CORS - allow all origins with proper preflight handling
+app.use((req, res, next) => {
+  const origin = req.headers.origin || '*';
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Max-Age', '86400');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+  next();
+});
 
 // Body parsing
 app.use(express.json({ limit: process.env.BODY_LIMIT || '10mb' }));

@@ -366,6 +366,7 @@
       renderConversations();
     } catch (err) {
       console.error('Failed to load conversations:', err);
+      showToast(err.message || 'Failed to load conversations', 'error');
     }
   }
 
