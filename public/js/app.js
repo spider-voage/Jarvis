@@ -266,10 +266,7 @@
   // ===== Auth =====
   async function initAuth() {
     // Always dismiss loading screen so auth/login is accessible
-    const loader = document.querySelector('.loading-screen');
-    if (loader) loader.classList.add('hidden');
-
-    if (!state.token) {
+        if (!state.token) {
       showAuthScreen();
       return;
     }
@@ -294,9 +291,7 @@
   }
 
   function showAuthScreen() {
-    const loader = document.querySelector('.loading-screen');
-    if (loader) loader.classList.add('hidden');
-    $('#auth-screen')?.classList.remove('hidden');
+        $('#auth-screen')?.classList.remove('hidden');
     $('#app-container')?.classList.add('hidden');
   }
 
@@ -1163,10 +1158,7 @@
   // ===== App Initialization =====
   async function initApp() {
     // Hide loading screen immediately so UI is interactive
-    const loader = document.querySelector('.loading-screen');
-    if (loader) loader.classList.add('hidden');
-
-    await loadSettings();
+        await loadSettings();
     await loadConversations();
     initVoice();
     initEventListeners();
